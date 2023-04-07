@@ -1,4 +1,4 @@
-from scipy.signal import StateSpace
+from scipy.signal import StateSpace, lsim
 import numpy as np
 
 
@@ -21,6 +21,21 @@ class LTISystem(object):
         self.D = D if D is not None else 0.0
         self.dt = dt
         self.ss = StateSpace(A, B, C, D, dt)
+
+    def simulate(self, U, initial_state=None, dt=None):
+        if dt is None and self.dt is None:
+            raise ValueError(f"Simulation requires time step, None supplied")
+
+        if initial_state is not None and initial_state.shape != (self.A.shape[0], 1):
+            raise ValueError(
+                f"Initial state should have dimensions {(self.A.shape[0],1)}, got {initial_state.shape}!"
+            )
+
+        t = np.arange(0, len(U) * dt, dt)
+
+        t, y, x = lsim(self.ss, U, t, initial_state)
+
+        return t, y, x
 
 
 class SpringMassDamper(LTISystem):
