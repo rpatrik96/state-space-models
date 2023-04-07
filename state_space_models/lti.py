@@ -3,7 +3,7 @@ import numpy as np
 
 
 class LTISystem(object):
-    def __int__(self, A, B, C=0, D=None):
+    def __int__(self, A, B, C=0, D=None, dt=None):
         super().__init__()
 
         if A.shape[0] != A.shape[1]:
@@ -19,12 +19,13 @@ class LTISystem(object):
         self.B = B
         self.C = C if C is not None else np.eye(A.shape[0])
         self.D = D if D is not None else 0.0
-        self.ss = StateSpace(A, B, C, D)
+        self.dt = dt
+        self.ss = StateSpace(A, B, C, D, dt)
 
 
 class SpringMassDamper(LTISystem):
     def __init__(self, A, B, C, D):
-        super().__init__(A, B, C, D)
+        super().__init__(A, B, C, D, None)
 
     @classmethod
     def from_params(cls, damping=4, spring_stiffness=2, mass=20):
