@@ -3,7 +3,14 @@ import numpy as np
 
 
 class LTISystem(object):
-    def __int__(self, A, B, C=0, D=None, dt=None):
+    def __init__(
+        self,
+        A: np.ndarray,
+        B: np.ndarray,
+        C: np.ndarray = None,
+        D: np.ndarray = None,
+        dt=None,
+    ):
         super().__init__()
 
         if A.shape[0] != A.shape[1]:
@@ -39,14 +46,15 @@ class LTISystem(object):
 
 
 class SpringMassDamper(LTISystem):
-    def __init__(self, A, B, C, D):
+    def __init__(
+        self, A: np.ndarray, B: np.ndarray, C: np.ndarray = None, D: np.ndarray = None
+    ):
         super().__init__(A, B, C, D, None)
 
     @classmethod
     def from_params(cls, damping=4, spring_stiffness=2, mass=20):
-        # System matrices
-        A = [[0, 1], [-spring_stiffness / mass, -damping / mass]]
-        B = [[0], [1 / mass]]
-        C = [[1, 0]]
-        D = 0
+        A = np.array([[0, 1], [-spring_stiffness / mass, -damping / mass]])
+        B = np.array([[0], [1 / mass]])
+        C = np.array([[1, 0]])
+        D = np.array(0)
         return cls(A, B, C, D)
