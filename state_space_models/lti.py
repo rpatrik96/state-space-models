@@ -1,5 +1,7 @@
 from scipy.signal import StateSpace, lsim
 import numpy as np
+from typing import Optional
+from __future__ import annotations
 
 
 class LTISystem(object):
@@ -7,9 +9,9 @@ class LTISystem(object):
         self,
         A: np.ndarray,
         B: np.ndarray,
-        C: np.ndarray = None,
-        D: np.ndarray = None,
-        dt=None,
+        C: Optional[np.ndarray] = None,
+        D: Optional[np.ndarray] = None,
+        dt: Optional[float] = None,
     ):
         super().__init__()
 
@@ -22,16 +24,24 @@ class LTISystem(object):
                 f"the control matrix (B) should have {A.shape[0]} rows, got {B.shape[0]}"
             )
 
-        self.A = A
-        self.B = B
-        self.C = C if C is not None else np.eye(A.shape[0])
-        self.D = D if D is not None else 0.0
-        self.dt = dt
-        self.ss = StateSpace(A, B, C, D, dt)
+        self.A: np.ndarray = A
+        self.B: np.ndarray = B
+        self.C: np.ndarray = C if C is not None else np.eye(A.shape[0])
+        self.D: np.ndarray = D if D is not None else np.array(0.0)
+        self.dt: Optional[float] = dt
+        self.ss: StateSpace = StateSpace(A, B, C, D, dt)
 
-    def simulate(self, U, initial_state=None, dt=None):
-        if dt is None and self.dt is None:
-            raise ValueError(f"Simulation requires time step, None supplied")
+    def simulate(
+        self,
+        U: np.ndarray,
+        initial_state: Optional[np.ndarray] = None,
+        dt: Optional[float] = None,
+    ):
+        if dt is None:
+            if self.dt is None:
+                raise ValueError(f"Simulation requires time step, None supplied")
+            else:
+                dt = self.dt
 
         if initial_state is not None and initial_state.shape != (self.A.shape[0], 1):
             raise ValueError(
@@ -52,9 +62,9 @@ class SpringMassDamper(LTISystem):
         super().__init__(A, B, C, D, None)
 
     @classmethod
-    def from_params(cls, damping=4, spring_stiffness=2, mass=20):
-        A = np.array([[0, 1], [-spring_stiffness / mass, -damping / mass]])
-        B = np.array([[0], [1 / mass]])
-        C = np.array([[1, 0]])
-        D = np.array(0)
+    def from_params(cls, damping=4, spring_stiffness=2, mass=20) -> SpringMassDamper:
+        A: np.ndarray = np.array([[0, 1], [-spring_stiffness / mass, -damping / mass]])
+        B: np.ndarray = np.array([[0], [1 / mass]])
+        C: np.ndarray = np.array([[1, 0]])
+        D: np.ndarray = np.array(0)
         return cls(A, B, C, D)
