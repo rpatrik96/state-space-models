@@ -18,5 +18,4 @@ repos:
         types_or: [ python, pyi ]
         language: python
         language_version: python3.11
-#        minimum_pre_commit_version: '3.2.2'
         args: [ "--ignore-missing-imports", "--scripts-are-modules" ]
