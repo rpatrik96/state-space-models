@@ -1,7 +1,8 @@
+from __future__ import annotations
 from scipy.signal import StateSpace, lsim
 import numpy as np
 from typing import Optional
-from __future__ import annotations
+from control import ctrb
 
 
 class LTISystem(object):
@@ -53,6 +54,10 @@ class LTISystem(object):
         t, y, x = lsim(self.ss, U, t, initial_state)
 
         return t, y, x
+
+    @property
+    def controllability(self) -> np.ndarray:
+        return ctrb(self.A, self.B)
 
 
 class SpringMassDamper(LTISystem):
