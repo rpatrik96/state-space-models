@@ -62,7 +62,11 @@ class LTISystem(object):
 
 class SpringMassDamper(LTISystem):
     def __init__(
-        self, A: np.ndarray, B: np.ndarray, C: np.ndarray = None, D: np.ndarray = None
+        self,
+        A: np.ndarray,
+        B: np.ndarray,
+        C: Optional[np.ndarray] = None,
+        D: Optional[np.ndarray] = None,
     ):
         super().__init__(A, B, C, D, None)
 
