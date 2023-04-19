@@ -33,7 +33,7 @@ Conference
 ## How to run   
 First, install dependencies   
 ```bash
-# clone vae-sam   
+# clone state-space-models   
 git clone --recurse-submodules https://github.com/rpatrik96/state-space-models
 
 
