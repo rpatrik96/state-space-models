@@ -28,9 +28,9 @@ class LTISystem(object):
         self.A: np.ndarray = A
         self.B: np.ndarray = B
         self.C: np.ndarray = C if C is not None else np.eye(A.shape[0])
-        self.D: np.ndarray = D if D is not None else np.array(0.0)
+        self.D: np.ndarray = D if D is not None else np.zeros_like(B)
         self.dt: Optional[float] = dt
-        self.ss: StateSpace = StateSpace(A, B, C, D)
+        self.ss: StateSpace = StateSpace(self.A, self.B, self.C, self.D)
 
     def simulate(
         self,
