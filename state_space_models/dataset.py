@@ -18,7 +18,7 @@ class LTIDataset(Dataset):
         self.num_steps: int = num_steps
         self.variance: torch.FloatTensor = torch.FloatTensor([variance])
         self.dt: float = dt
-        self.U: torch.FloatTensor = (
+        self.U: torch.Tensor = (
             torch.randn(num_steps, lti.B.shape[1], dtype=torch.float32)
             * self.variance.sqrt()
         )
