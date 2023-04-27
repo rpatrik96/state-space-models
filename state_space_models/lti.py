@@ -2,7 +2,7 @@ from __future__ import annotations
 from scipy.signal import StateSpace, lsim
 import numpy as np
 from typing import Optional
-from control import ctrb
+from control import ctrb, obsv
 
 
 class LTISystem(object):
@@ -58,6 +58,29 @@ class LTISystem(object):
     @property
     def controllability(self) -> np.ndarray:
         return ctrb(self.A, self.B)
+
+    @property
+    def observability(self) -> np.ndarray:
+        return obsv(self.A, self.C)
+
+    @classmethod
+    def controllable_system(cls, state_dim, control_dim, triangular=False):
+        num_attempt = 0
+
+        while True:
+            A = np.random.randn(state_dim, state_dim)
+            B = np.random.randn(state_dim, control_dim)
+            if np.linalg.matrix_rank(ctrb(A, B)) == state_dim:
+                break
+
+            num_attempt += 1
+            if num_attempt > 100:
+                raise ValueError("Could not find controllable system!")
+
+        C = None
+        D = None
+
+        return cls(A, B, C, D)
 
 
 class SpringMassDamper(LTISystem):
