@@ -28,4 +28,4 @@ class LTIDataset(Dataset):
         return self.num_steps
 
     def __getitem__(self, idx):
-        return self.y[idx]
+        return self.x[idx], self.y[idx]
