@@ -1,5 +1,5 @@
 from __future__ import annotations
-from scipy.signal import StateSpace, lsim
+from scipy.signal import StateSpace, lsim, dlsim
 import numpy as np
 from typing import Optional
 from control import ctrb, obsv
@@ -30,7 +30,7 @@ class LTISystem(object):
         self.C: np.ndarray = C if C is not None else np.eye(A.shape[0])
         self.D: np.ndarray = D if D is not None else np.zeros_like(B)
         self.dt: Optional[float] = dt
-        self.ss: StateSpace = StateSpace(self.A, self.B, self.C, self.D)
+        self.ss: StateSpace = StateSpace(self.A, self.B, self.C, self.D, dt=self.dt)
 
     def simulate(
         self,
@@ -51,7 +51,7 @@ class LTISystem(object):
 
         t = np.arange(0, len(U) * dt, dt)
 
-        t, y, x = lsim(self.ss, U, t, initial_state)
+        t, y, x = dlsim(self.ss, U, t, initial_state)
 
         return t, y, x
 
@@ -64,12 +64,22 @@ class LTISystem(object):
         return obsv(self.A, self.C)
 
     @classmethod
-    def controllable_system(cls, state_dim, control_dim, triangular=False):
+    def controllable_system(cls, state_dim, control_dim, triangular=False, dt=0.01):
         num_attempt = 0
 
         while True:
             A = np.random.randn(state_dim, state_dim)
-            B = np.random.randn(state_dim, control_dim)
+
+            if triangular is True:
+                A = np.tril(A)
+
+            # rescale A such that all eigenvalues are < 1
+            A = A / np.max(np.abs(np.linalg.eigvals(A))) * 0.9
+
+            print(np.abs(np.linalg.eigvals(A)))
+
+            # B = np.random.randn(state_dim, control_dim)
+            B = np.eye(state_dim)
             if np.linalg.matrix_rank(ctrb(A, B)) == state_dim:
                 break
 
@@ -80,7 +90,7 @@ class LTISystem(object):
         C = None
         D = None
 
-        return cls(A, B, C, D)
+        return cls(A, B, C, D, dt=dt)
 
 
 class SpringMassDamper(LTISystem):
