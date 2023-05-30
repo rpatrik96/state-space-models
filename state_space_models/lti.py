@@ -64,7 +64,7 @@ class LTISystem(object):
         return obsv(self.A, self.C)
 
     @classmethod
-    def controllable_system(cls, state_dim, control_dim, triangular=False, dt=0.01):
+    def controllable_system(cls, state_dim, control_dim, triangular=False, dt=0.01, use_B=True, use_C=False):
         num_attempt = 0
 
         while True:
@@ -78,16 +78,34 @@ class LTISystem(object):
 
             print(np.abs(np.linalg.eigvals(A)))
 
-            # B = np.random.randn(state_dim, control_dim)
-            B = np.eye(state_dim)
+
+            if use_B is True:
+                B = np.random.randn(state_dim, control_dim)
+            else:
+                B = np.eye(state_dim)
+
             if np.linalg.matrix_rank(ctrb(A, B)) == state_dim:
                 break
 
             num_attempt += 1
             if num_attempt > 100:
-                raise ValueError("Could not find controllable system!")
+                raise ValueError("Could not find a controllable system!")
 
-        C = None
+        if use_C is True:
+            while True:
+
+                C = np.random.randn(state_dim, state_dim)
+
+
+                if np.linalg.matrix_rank(obsv(A, C)) == state_dim:
+                    break
+
+                num_attempt += 1
+                if num_attempt > 100:
+                    raise ValueError("Could not find an observable system!")
+        else:
+            C = None
+
         D = None
 
         return cls(A, B, C, D, dt=dt)
