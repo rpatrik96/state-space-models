@@ -12,7 +12,7 @@ class LTIDataset(Dataset):
     """
 
     def __init__(
-        self, lti: LTISystem, num_steps: int, variance: float, dt: float = 0.1
+        self, lti: LTISystem, num_steps: int, variance: float, dt: float = 1e-3
     ):
         self.lti: LTISystem = lti
         self.num_steps: int = num_steps
