@@ -5,7 +5,7 @@ from .lti import LTISystem
 
 class LTIDataset(Dataset):
     """
-    A pytorch dataset that takes an LTI modelfrom lti.py and provides the wrapper
+    A pytorch dataset that takes an LTI model from lti.py and provides the wrapper
     with the pytorch standard dataset function to provide data for neural nets.
     It takes the number of simulation steps and the variance for the gaussian control signal
     then simulates the data sequence. __getitem__ returns the ith index of the time series
