@@ -12,7 +12,7 @@ class LTISystem(object):
         B: np.ndarray,
         C: Optional[np.ndarray] = None,
         D: Optional[np.ndarray] = None,
-        dt: Optional[float] = None,
+        dt: float = 1e-3,
     ):
         super().__init__()
 
@@ -29,7 +29,7 @@ class LTISystem(object):
         self.B: np.ndarray = B
         self.C: np.ndarray = C if C is not None else np.eye(A.shape[0])
         self.D: np.ndarray = D if D is not None else np.zeros_like(B)
-        self.dt: Optional[float] = dt
+        self.dt: float = dt
         self.ss: StateSpace = StateSpace(self.A, self.B, self.C, self.D, dt=self.dt)
 
     def simulate(
@@ -64,7 +64,9 @@ class LTISystem(object):
         return obsv(self.A, self.C)
 
     @classmethod
-    def controllable_system(cls, state_dim, control_dim, triangular=False, dt=0.01, use_B=True, use_C=False):
+    def controllable_system(
+        cls, state_dim, control_dim, triangular=False, dt=0.01, use_B=True, use_C=False
+    ):
         num_attempt = 0
 
         while True:
@@ -77,7 +79,6 @@ class LTISystem(object):
             A = A / np.max(np.abs(np.linalg.eigvals(A))) * 0.9
 
             print(np.abs(np.linalg.eigvals(A)))
-
 
             if use_B is True:
                 B = np.random.randn(state_dim, control_dim)
@@ -93,9 +94,7 @@ class LTISystem(object):
 
         if use_C is True:
             while True:
-
                 C = np.random.randn(state_dim, state_dim)
-
 
                 if np.linalg.matrix_rank(obsv(A, C)) == state_dim:
                     break
@@ -119,7 +118,7 @@ class SpringMassDamper(LTISystem):
         C: Optional[np.ndarray] = None,
         D: Optional[np.ndarray] = None,
     ):
-        super().__init__(A, B, C, D, None)
+        super().__init__(A, B, C, D)
 
     @classmethod
     def from_params(cls, damping=4, spring_stiffness=2, mass=20) -> SpringMassDamper:
