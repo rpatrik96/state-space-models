@@ -43,6 +43,11 @@ class LTISystem(object):
                 raise ValueError(f"Simulation requires time step, None supplied")
             else:
                 dt = self.dt
+        else:
+            if dt != self.dt:
+                raise ValueError(
+                    f"Simulation requires time step {self.dt}, got {dt} instead"
+                )
 
         if initial_state is not None and initial_state.shape != (self.A.shape[0], 1):
             raise ValueError(
