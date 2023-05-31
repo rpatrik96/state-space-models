@@ -9,6 +9,7 @@ def lti_AB():
     np.random.seed(42)
     A = np.random.randn(dim, dim)
     B = np.random.randn(dim, dim)
-    lti = LTISystem(A=A, B=B)
+    dt = 0.01
+    lti = LTISystem(A=A, B=B, dt=dt)
 
     return lti
