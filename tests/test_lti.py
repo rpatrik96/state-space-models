@@ -11,7 +11,7 @@ def test_lti_simulate(lti_AB):
     num_step = 50
     dim = 2
     U = np.random.randn(num_step, dim)
-    t, y, x = lti_AB.simulate(U, dt=0.1)
+    t, y, x = lti_AB.simulate(U)
 
     assert x.shape == (num_step, dim)
     assert y.shape == (num_step, lti_AB.C.shape[0])
