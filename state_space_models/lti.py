@@ -122,8 +122,9 @@ class SpringMassDamper(LTISystem):
         B: np.ndarray,
         C: Optional[np.ndarray] = None,
         D: Optional[np.ndarray] = None,
+        dt: float = 1e-3,
     ):
-        super().__init__(A, B, C, D)
+        super().__init__(A, B, C, D, dt)
 
     @classmethod
     def from_params(cls, damping=4, spring_stiffness=2, mass=20) -> SpringMassDamper:
