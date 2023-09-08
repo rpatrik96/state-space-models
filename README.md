@@ -16,7 +16,7 @@
 [![Paper](http://img.shields.io/badge/arxiv-stat.ML:2206.02416-B31B1B.svg)](https://arxiv.org/abs/2206.02416)
 -->  
 
-![CI testing](https://github.com/rpatrik96/state-space-models/workflows/CI%20testing/badge.svg?branch=master&event=push)
+![CI testing](https://github.com/rpatrik96/state-space-models/workflows/CI%20testing/badge.svg?branch=main&event=push)
 
 <!-- 
 [![DOI](https://zenodo.org/badge/431811003.svg)](https://zenodo.org/badge/latestdoi/431811003)
