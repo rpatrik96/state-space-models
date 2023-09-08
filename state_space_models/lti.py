@@ -127,7 +127,9 @@ class SpringMassDamper(LTISystem):
         super().__init__(A, B, C, D, dt)
 
     @classmethod
-    def from_params(cls, damping=4, spring_stiffness=2, mass=20, dt=1e-3) -> SpringMassDamper:
+    def from_params(
+        cls, damping=4, spring_stiffness=2, mass=20, dt=1e-3
+    ) -> SpringMassDamper:
         A: np.ndarray = np.array([[0, 1], [-spring_stiffness / mass, -damping / mass]])
         B: np.ndarray = np.array([[0], [1 / mass]])
         C: np.ndarray = np.array([[1, 0]])
