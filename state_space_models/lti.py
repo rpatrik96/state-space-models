@@ -140,6 +140,10 @@ class SpringMassDamper(LTISystem):
 
 
 class DCMotor(LTISystem):
+    """Source: https://ctms.engin.umich.edu/CTMS/index.php?example=MotorSpeed&section=SystemModeling
+    The C matrix is modified to be the identity matrix, so that the output is the state itself.
+    """
+
     def __init__(
         self,
         A: np.ndarray,
