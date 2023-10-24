@@ -1,8 +1,10 @@
 from __future__ import annotations
-from scipy.signal import StateSpace, lsim, dlsim
-import numpy as np
+
 from typing import Optional
+
+import numpy as np
 from control import ctrb, obsv
+from scipy.signal import StateSpace, dlsim
 
 
 class LTISystem(object):
@@ -51,7 +53,7 @@ class LTISystem(object):
 
         if initial_state is not None and initial_state.shape != (self.A.shape[0], 1):
             raise ValueError(
-                f"Initial state should have dimensions {(self.A.shape[0],1)}, got {initial_state.shape}!"
+                f"Initial state should have dimensions {(self.A.shape[0], 1)}, got {initial_state.shape}!"
             )
 
         t = np.arange(0, len(U) * dt, dt)
@@ -134,4 +136,43 @@ class SpringMassDamper(LTISystem):
         B: np.ndarray = np.array([[0], [1 / mass]])
         C: np.ndarray = np.array([[1, 0]])
         D: np.ndarray = np.array(0)
+        return cls(A, B, C, D, dt)
+
+
+class DCMotor(LTISystem):
+    def __init__(
+        self,
+        A: np.ndarray,
+        B: np.ndarray,
+        C: Optional[np.ndarray] = None,
+        D: Optional[np.ndarray] = None,
+        dt: float = 1e-3,
+    ):
+        super().__init__(A, B, C, D, dt)
+
+    @classmethod
+    def from_params(
+        cls,
+        armature_resistance=1,
+        armature_inductance=0.5,
+        electromotive_force_constant=0.01,
+        rotor_inertia=0.01,
+        rotor_damping=0.1,
+        dt=1e-3,
+    ) -> DCMotor:
+        A: np.ndarray = np.array(
+            [
+                [
+                    -armature_resistance / armature_inductance,
+                    electromotive_force_constant / armature_inductance,
+                ],
+                [
+                    -electromotive_force_constant / rotor_inertia,
+                    -rotor_damping / rotor_inertia,
+                ],
+            ]
+        )
+        B: np.ndarray = np.array([[1 / armature_inductance], [0]])
+        C: np.ndarray = np.eye(2)
+        D: np.ndarray = np.zeros_like(B)
         return cls(A, B, C, D, dt)
