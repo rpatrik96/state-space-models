@@ -4,7 +4,7 @@ from typing import Optional
 
 import numpy as np
 from control import ctrb, obsv
-from scipy.signal import StateSpace, dlsim
+from scipy.signal import StateSpace, dlsim, cont2discrete
 
 
 class LTISystem(object):
@@ -136,7 +136,8 @@ class SpringMassDamper(LTISystem):
         B: np.ndarray = np.array([[0], [1 / mass]])
         C: np.ndarray = np.array([[1, 0]])
         D: np.ndarray = np.array(0)
-        return cls(A, B, C, D, dt)
+        discrete_system = cont2discrete((A, B, C, D), dt=dt)
+        return cls(*discrete_system)
 
 
 class DCMotor(LTISystem):
@@ -179,4 +180,6 @@ class DCMotor(LTISystem):
         B: np.ndarray = np.array([[1 / armature_inductance], [0]])
         C: np.ndarray = np.eye(2)
         D: np.ndarray = np.zeros_like(B)
-        return cls(A, B, C, D, dt)
+
+        discrete_system = cont2discrete((A, B, C, D), dt=dt)
+        return cls(*discrete_system)
