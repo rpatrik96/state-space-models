@@ -1,4 +1,4 @@
-from state_space_models.lti import SpringMassDamper, LTISystem
+from state_space_models.lti import SpringMassDamper, LTISystem, DCMotor
 import numpy as np
 import pytest
 
@@ -22,6 +22,12 @@ def test_lti_controllable_system(triangular):
     lti = LTISystem.controllable_system(2, 2, triangular=triangular)
 
 
-def test_spring_mass():
-    s = SpringMassDamper.from_params()
-    m = s.controllability
+@pytest.mark.parametrize("cls", [SpringMassDamper, DCMotor])
+def test_custom_lti_obsv_ctrb(cls):
+    s = cls.from_params()
+
+    assert s.A.shape[0] == s.A.shape[1]
+    state_dim = s.A.shape[0]
+
+    assert np.linalg.matrix_rank(s.controllability) == state_dim
+    assert np.linalg.matrix_rank(s.observability) == state_dim
